@@ -49,9 +49,8 @@ class VariableToken extends CalculationToken {
 	}
 
 	@Override
-	void mutateStackForCalculation(Stack<Double> stack, Map<String, Double> variableValues) {
-		double value = variableValues.get(this.getValue());
-		stack.push(value);
+	void mutateStackForCalculation(Stack<Number> stack, Map<String, Number> variableValues) {
+		stack.push(variableValues.get(this.getValue()));
 	}
 
 	@Override

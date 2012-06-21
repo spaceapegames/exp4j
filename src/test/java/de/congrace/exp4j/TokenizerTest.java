@@ -35,26 +35,26 @@ public class TokenizerTest {
 	public static void setup() throws Exception {
 		CustomOperator add = new CustomOperator("+") {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] + values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() + values[1].getRealPart());
 			}
 		};
 		CustomOperator sub = new CustomOperator("-") {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] - values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() - values[1].getRealPart());
 			}
 		};
 		CustomOperator div = new CustomOperator("/", 1) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] / values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() / values[1].getRealPart());
 			}
 		};
 		CustomOperator mul = new CustomOperator("*", 1) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] / values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() / values[1].getRealPart());
 			}
 		};
 		operations.put("+", add);
@@ -64,104 +64,104 @@ public class TokenizerTest {
 
 		CustomFunction abs = new CustomFunction("abs") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.abs(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.abs(args[0].getRealPart()));
 			}
 		};
 		CustomFunction acos = new CustomFunction("acos") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.acos(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.acos(args[0].getRealPart()));
 			}
 		};
 		CustomFunction asin = new CustomFunction("asin") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.asin(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.asin(args[0].getRealPart()));
 			}
 		};
 		CustomFunction atan = new CustomFunction("atan") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.atan(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.atan(args[0].getRealPart()));
 			}
 		};
 		CustomFunction cbrt = new CustomFunction("cbrt") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.cbrt(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.cbrt(args[0].getRealPart()));
 			}
 		};
 		CustomFunction ceil = new CustomFunction("ceil") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.ceil(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.ceil(args[0].getRealPart()));
 			}
 		};
 		CustomFunction cos = new CustomFunction("cos") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.cos(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.cos(args[0].getRealPart()));
 			}
 		};
 		CustomFunction cosh = new CustomFunction("cosh") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.cosh(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.cosh(args[0].getRealPart()));
 			}
 		};
 		CustomFunction exp = new CustomFunction("exp") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.exp(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.exp(args[0].getRealPart()));
 			}
 		};
 		CustomFunction expm1 = new CustomFunction("expm1") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.expm1(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.expm1(args[0].getRealPart()));
 			}
 		};
 		CustomFunction floor = new CustomFunction("floor") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.floor(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.floor(args[0].getRealPart()));
 			}
 		};
 		CustomFunction log = new CustomFunction("log") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.log(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.log(args[0].getRealPart()));
 			}
 		};
 		CustomFunction sine = new CustomFunction("sin") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.sin(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.sin(args[0].getRealPart()));
 			}
 		};
 		CustomFunction sinh = new CustomFunction("sinh") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.sinh(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.sinh(args[0].getRealPart()));
 			}
 		};
 		CustomFunction sqrt = new CustomFunction("sqrt") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.sqrt(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.sqrt(args[0].getRealPart()));
 			}
 		};
 		CustomFunction tan = new CustomFunction("tan") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.tan(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.tan(args[0].getRealPart()));
 			}
 		};
 		CustomFunction tanh = new CustomFunction("tanh") {
 			@Override
-			public double applyFunction(double... args) {
-				return Math.tanh(args[0]);
+			public Number applyFunction(Number... args) {
+				return new Number(Math.tanh(args[0].getRealPart()));
 			}
 		};
 		functions.put("abs", abs);
@@ -282,4 +282,14 @@ public class TokenizerTest {
 		Token[] actual = tokenizer.getTokens(expr).toArray(new Token[0]);
 		assertArrayEquals(expected, actual);
 	}
+	
+	@Test
+	public void testInfixTokenizeComplex1() throws Exception {
+		String expr = "2+3i";
+		Token[] expected = new Token[] { new NumberToken("2","3")};
+		Tokenizer tokenizer = new Tokenizer(new HashSet<String>(), functions, operations);
+		Token[] actual = tokenizer.getTokens(expr).toArray(new Token[0]);
+		assertArrayEquals(expected, actual);
+	}
+
 }

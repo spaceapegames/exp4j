@@ -130,5 +130,5 @@ public abstract class CustomOperator {
 	 *            array.
 	 * @return the result of the operation
 	 */
-	protected abstract double applyOperation(double[] values);
+	protected abstract Number applyOperation(Number[] values);
 }

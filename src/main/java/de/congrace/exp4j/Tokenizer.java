@@ -67,8 +67,43 @@ class Tokenizer {
 					valueBuilder.append(chars[i + numberLen]);
 					numberLen++;
 				}
-				i += numberLen - 1;
-				lastToken = new NumberToken(valueBuilder.toString());
+				// check if it's a complex number
+				int complexLen=0;
+				while (chars.length > i+numberLen+complexLen && chars[i+numberLen+complexLen] == ' '){
+					complexLen++;
+				}
+				// the + or minus sign of a complex number
+				boolean imgNegative = false;
+				if (chars.length > i+numberLen+complexLen && (chars[i+numberLen+complexLen] == '+' || chars[i+numberLen+complexLen] == '-')){
+					if (chars[i+numberLen+complexLen] == '-'){
+						imgNegative=true;
+					}
+					complexLen++;
+				}
+				while (chars.length > i+numberLen+complexLen && chars[i+numberLen+complexLen] == ' '){
+					complexLen++;
+				}
+				StringBuilder imgBuilder=new StringBuilder();
+				while (chars.length > i+numberLen + complexLen && isDigit(chars[i+numberLen+complexLen])){
+					imgBuilder.append(chars[i+numberLen+complexLen]);
+					complexLen++;
+				}
+				boolean complex=false;
+				if (chars.length > i+numberLen + complexLen && chars[i+numberLen+complexLen] == 'i'){
+					complex=true;
+					complexLen++;
+				}
+				if (complex){
+					i += numberLen + complexLen - 1;
+					if (imgNegative){
+						lastToken = new NumberToken(valueBuilder.toString(),String.valueOf(-1.0d * Double.parseDouble(imgBuilder.toString())));
+					}else{
+						lastToken = new NumberToken(valueBuilder.toString(),imgBuilder.toString());
+					}
+				}else{
+					i += numberLen -1;
+					lastToken = new NumberToken(valueBuilder.toString());
+				}
 			} else if (Character.isLetter(c) || c == '_') {
 				// can be a variable or function
 				final StringBuilder nameBuilder = new StringBuilder();

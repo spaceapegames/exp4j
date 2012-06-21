@@ -9,9 +9,9 @@ class RPNExpression implements Calculable {
 
 	final String expression;
 
-	final Map<String, Double> variables;
+	final Map<String, Number> variables;
 
-	public RPNExpression(List<Token> tokens, String expression, final Map<String, Double> variables) {
+	public RPNExpression(List<Token> tokens, String expression, final Map<String, Number> variables) {
 		super();
 		this.tokens = tokens;
 		this.expression = expression;
@@ -27,7 +27,7 @@ class RPNExpression implements Calculable {
 	 * @throws IllegalArgumentException
 	 *             if the variables are invalid
 	 */
-	public double calculate(double... values) throws IllegalArgumentException {
+	public Number calculate(Number... values) throws IllegalArgumentException {
 		if (variables.size() == 0 && values != null) {
 			throw new IllegalArgumentException("there are no variables to set values");
 		} else if (values != null && values.length != variables.size()) {
@@ -35,11 +35,11 @@ class RPNExpression implements Calculable {
 		}
 		int i = 0;
 		if (variables.size() > 0 && values != null) {
-			for (Map.Entry<String, Double> entry : variables.entrySet()) {
+			for (Map.Entry<String, Number> entry : variables.entrySet()) {
 				entry.setValue(values[i++]);
 			}
 		}
-		final Stack<Double> stack = new Stack<Double>();
+		final Stack<Number> stack = new Stack<Number>();
 		for (final Token t : tokens) {
 			((CalculationToken) t).mutateStackForCalculation(stack, variables);
 		}
@@ -50,11 +50,11 @@ class RPNExpression implements Calculable {
 		return expression;
 	}
 
-	public void setVariable(String name, double value) {
+	public void setVariable(String name, Number value) {
 		this.variables.put(name, value);
 	}
 
-	public double calculate() {
+	public Number calculate() {
 		return calculate(null);
 	}
 }

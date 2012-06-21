@@ -48,7 +48,7 @@ class OperatorToken extends CalculationToken {
 	 *            the doubles to operate on
 	 * @return the result of the {@link CustomOperator}
 	 */
-	double applyOperation(double... values) {
+	Number applyOperation(Number... values) {
 		return operation.applyOperation(values);
 	}
 
@@ -67,8 +67,8 @@ class OperatorToken extends CalculationToken {
 	}
 
 	@Override
-	void mutateStackForCalculation(Stack<Double> stack, Map<String, Double> variableValues) {
-		final double[] operands = new double[operation.operandCount];
+	void mutateStackForCalculation(Stack<Number> stack, Map<String, Number> variableValues) {
+		final Number[] operands = new Number[operation.operandCount];
 		for (int i = 0; i < operation.operandCount; i++) {
 			operands[operation.operandCount - i - 1] = stack.pop();
 		}

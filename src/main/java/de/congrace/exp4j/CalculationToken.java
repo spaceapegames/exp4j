@@ -5,10 +5,10 @@ import java.util.Stack;
 
 abstract class CalculationToken extends Token {
 
-	CalculationToken(String value) {
-		super(value);
+	CalculationToken(String originalValue) {
+		super(originalValue);
 	}
 
-	abstract void mutateStackForCalculation(Stack<Double> stack, Map<String, Double> variableValues);
+	abstract void mutateStackForCalculation(Stack<Number> stack, Map<String, Number> variableValues);
 
 }

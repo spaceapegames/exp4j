@@ -19,12 +19,12 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction1() throws Exception {
 		CustomFunction custom = new CustomFunction("timespi") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.PI;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.PI);
 			}
 		};
-		Calculable calc = new ExpressionBuilder("timespi(x)").withVariable("x", 1).withCustomFunction(custom).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("timespi(x)").withVariable("x", new Number(1)).withCustomFunction(custom).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.PI);
 	}
 
@@ -32,12 +32,12 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction2() throws Exception {
 		CustomFunction custom = new CustomFunction("loglog") {
 			@Override
-			public double applyFunction(double... values) {
-				return Math.log(Math.log(values[0]));
+			public Number applyFunction(Number... values) {
+				return new Number(Math.log(Math.log(values[0].getRealPart())));
 			}
 		};
-		Calculable calc = new ExpressionBuilder("loglog(x)").withVariable("x", 1).withCustomFunction(custom).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("loglog(x)").withVariable("x", new Number(1)).withCustomFunction(custom).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.log(Math.log(1)));
 	}
 
@@ -45,19 +45,19 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction3() throws Exception {
 		CustomFunction custom1 = new CustomFunction("foo") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.E;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.E);
 			}
 		};
 		CustomFunction custom2 = new CustomFunction("bar") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.PI;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.PI);
 			}
 		};
-		Calculable calc = new ExpressionBuilder("foo(bar(x))").withVariable("x", 1).withCustomFunction(custom1)
+		Calculable calc = new ExpressionBuilder("foo(bar(x))").withVariable("x", new Number(1)).withCustomFunction(custom1)
 				.withCustomFunction(custom2).build();
-		double result = calc.calculate();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == 1 * Math.E * Math.PI);
 	}
 
@@ -65,14 +65,14 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction4() throws Exception {
 		CustomFunction custom1 = new CustomFunction("foo") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.E;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.E);
 			}
 		};
 		double varX = 32.24979131d;
-		Calculable calc = new ExpressionBuilder("foo(log(x))").withVariable("x", varX).withCustomFunction(custom1)
+		Calculable calc = new ExpressionBuilder("foo(log(x))").withVariable("x", new Number(varX)).withCustomFunction(custom1)
 				.build();
-		double result = calc.calculate();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.log(varX) * Math.E);
 	}
 
@@ -80,20 +80,20 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction5() throws Exception {
 		CustomFunction custom1 = new CustomFunction("foo") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.E;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.E);
 			}
 		};
 		CustomFunction custom2 = new CustomFunction("bar") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.PI;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.PI);
 			}
 		};
 		double varX = 32.24979131d;
-		Calculable calc = new ExpressionBuilder("bar(foo(log(x)))").withVariable("x", varX).withCustomFunction(custom1)
+		Calculable calc = new ExpressionBuilder("bar(foo(log(x)))").withVariable("x", new Number(varX)).withCustomFunction(custom1)
 				.withCustomFunction(custom2).build();
-		double result = calc.calculate();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.log(varX) * Math.E * Math.PI);
 	}
 
@@ -101,20 +101,20 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction6() throws Exception {
 		CustomFunction custom1 = new CustomFunction("foo") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.E;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.E);
 			}
 		};
 		CustomFunction custom2 = new CustomFunction("bar") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.PI;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.PI);
 			}
 		};
 		double varX = 32.24979131d;
-		Calculable calc = new ExpressionBuilder("bar(foo(log(x)))").withVariable("x", varX)
+		Calculable calc = new ExpressionBuilder("bar(foo(log(x)))").withVariable("x", new Number(varX))
 				.withCustomFunctions(Arrays.asList(custom1, custom2)).build();
-		double result = calc.calculate();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.log(varX) * Math.E * Math.PI);
 	}
 
@@ -122,91 +122,91 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction7() throws Exception {
 		CustomFunction custom1 = new CustomFunction("half") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] / 2;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() / 2);
 			}
 		};
-		Calculable calc = new ExpressionBuilder("half(x)").withVariable("x", 1d).withCustomFunction(custom1).build();
-		assertTrue(0.5d == calc.calculate());
+		Calculable calc = new ExpressionBuilder("half(x)").withVariable("x", new Number(1d)).withCustomFunction(custom1).build();
+		assertTrue(0.5d == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomFunction10() throws Exception {
 		CustomFunction custom1 = new CustomFunction("max", 2) {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] < values[1] ? values[1] : values[0];
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() < values[1].getRealPart() ? values[1].getRealPart() : values[0].getRealPart());
 			}
 		};
-		Calculable calc = new ExpressionBuilder("max(x,y)").withVariable("x", 1d).withVariable("y", 2)
+		Calculable calc = new ExpressionBuilder("max(x,y)").withVariable("x", new Number(1d)).withVariable("y", new Number(2))
 				.withCustomFunction(custom1).build();
-		assertTrue(2 == calc.calculate());
+		assertTrue(2 == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomFunction11() throws Exception {
 		CustomFunction custom1 = new CustomFunction("power", 2) {
 			@Override
-			public double applyFunction(double... values) {
-				return Math.pow(values[0], values[1]);
+			public Number applyFunction(Number... values) {
+				return new Number(Math.pow(values[0].getRealPart(), values[1].getRealPart()));
 			}
 		};
-		Calculable calc = new ExpressionBuilder("power(x,y)").withVariable("x", 2d).withVariable("y", 4d)
+		Calculable calc = new ExpressionBuilder("power(x,y)").withVariable("x", new Number(2d)).withVariable("y", new Number(4d))
 				.withCustomFunction(custom1).build();
-		assertTrue(Math.pow(2, 4) == calc.calculate());
+		assertTrue(Math.pow(2, 4) == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomFunction12() throws Exception {
 		CustomFunction custom1 = new CustomFunction("max", 5) {
 			@Override
-			public double applyFunction(double... values) {
-				double max = values[0];
+			public Number applyFunction(Number... values) {
+				double max = values[0].getRealPart();
 				for (int i = 1; i < argc; i++) {
-					if (values[i] > max) {
-						max = values[i];
+					if (values[i].getRealPart() > max) {
+						max = values[i].getRealPart();
 					}
 				}
-				return max;
+				return new Number(max);
 			}
 		};
 		Calculable calc = new ExpressionBuilder("max(1,2.43311,51.13,43,12)").withCustomFunction(custom1).build();
-		assertTrue(51.13d == calc.calculate());
+		assertTrue(51.13d == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomFunction13() throws Exception {
 		CustomFunction custom1 = new CustomFunction("max", 3) {
 			@Override
-			public double applyFunction(double... values) {
-				double max = values[0];
+			public Number applyFunction(Number... values) {
+				double max = values[0].getRealPart();
 				for (int i = 1; i < argc; i++) {
-					if (values[i] > max) {
-						max = values[i];
+					if (values[i].getRealPart() > max) {
+						max = values[i].getRealPart();
 					}
 				}
-				return max;
+				return new Number(max);
 			}
 		};
 		double varX = Math.E;
-		Calculable calc = new ExpressionBuilder("max(log(x),sin(x),x)").withVariable("x", varX)
+		Calculable calc = new ExpressionBuilder("max(log(x),sin(x),x)").withVariable("x", new Number(varX))
 				.withCustomFunction(custom1).build();
-		assertTrue(varX == calc.calculate());
+		assertTrue(varX == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomFunction14() throws Exception {
 		CustomFunction custom1 = new CustomFunction("multiply", 2) {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * values[1];
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * values[1].getRealPart());
 			}
 		};
 		double varX = 1;
-		Calculable calc = new ExpressionBuilder("multiply(sin(x),x+1)").withVariable("x", varX)
+		Calculable calc = new ExpressionBuilder("multiply(sin(x),x+1)").withVariable("x", new Number(varX))
 				.withCustomFunction(custom1).build();
 		double expected = Math.sin(varX) * (varX + 1);
-		double actual = calc.calculate();
+		double actual = calc.calculate().getRealPart();
 		assertTrue(expected == actual);
 	}
 
@@ -214,15 +214,15 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction15() throws Exception {
 		CustomFunction custom1 = new CustomFunction("timesPi") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.PI;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.PI);
 			}
 		};
 		double varX = 1;
-		Calculable calc = new ExpressionBuilder("timesPi(x^2)").withVariable("x", varX).withCustomFunction(custom1)
+		Calculable calc = new ExpressionBuilder("timesPi(x^2)").withVariable("x", new Number(varX)).withCustomFunction(custom1)
 				.build();
 		double expected = varX * Math.PI;
-		double actual = calc.calculate();
+		double actual = calc.calculate().getRealPart();
 		assertTrue(expected == actual);
 	}
 
@@ -230,30 +230,30 @@ public class ExpressionBuilderTest {
 	public void testCustomFunction16() throws Exception {
 		CustomFunction custom1 = new CustomFunction("multiply", 3) {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * values[1];
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * values[1].getRealPart());
 			}
 		};
 		double varX = 1;
-		Calculable calc = new ExpressionBuilder("multiply(sin(x),x+1^(-2),log(x))").withVariable("x", varX)
+		Calculable calc = new ExpressionBuilder("multiply(sin(x),x+1^(-2),log(x))").withVariable("x", new Number(varX))
 				.withCustomFunction(custom1).build();
 		double expected = Math.sin(varX) * Math.pow((varX + 1), -2) * Math.log(varX);
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomFunction17() throws Exception {
 		CustomFunction custom1 = new CustomFunction("timesPi") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] * Math.PI;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() * Math.PI);
 			}
 		};
 		double varX = Math.E;
-		Calculable calc = new ExpressionBuilder("timesPi(log(x^(2+1)))").withVariable("x", varX)
+		Calculable calc = new ExpressionBuilder("timesPi(log(x^(2+1)))").withVariable("x", new Number(varX))
 				.withCustomFunction(custom1).build();
 		double expected = Math.log(Math.pow(varX, 3)) * Math.PI;
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 	
     // thanks to Marcin Domanski who issued http://jira.congrace.de/jira/browse/EXP-11
@@ -262,16 +262,16 @@ public class ExpressionBuilderTest {
     public void testCustomFunction18() throws Exception{
     	CustomFunction minFunction = new CustomFunction("min", 2) {
             @Override
-            public double applyFunction(double[] values) {
-                double currentMin = Double.POSITIVE_INFINITY;
-                for (double value : values) {
-                    currentMin = Math.min(currentMin, value);
+            public Number applyFunction(Number[] values) {
+                Number currentMin = new Number(Double.POSITIVE_INFINITY);
+                for (Number value : values) {
+                    currentMin = new Number(Math.min(currentMin.getRealPart(), value.getRealPart()));
                 }
                 return currentMin;
             }
         };
         ExpressionBuilder b=new ExpressionBuilder("-min(5, 0) + 10").withCustomFunction(minFunction);
-        double calculated = b.build().calculate();
+        double calculated = b.build().calculate().getRealPart();
         assertTrue(calculated == 10);
     }
 
@@ -279,48 +279,48 @@ public class ExpressionBuilderTest {
 	public void testCustomOperators1() throws Exception {
 		CustomOperator factorial = new CustomOperator("!", true, 6, 1) {
 			@Override
-			protected double applyOperation(double[] values) {
+			protected Number applyOperation(Number[] values) {
 				double tmp = 1d;
 				int steps = 1;
-				while (steps < values[0]) {
+				while (steps < values[0].getRealPart()) {
 					tmp = tmp * (++steps);
 				}
-				return tmp;
+				return new Number(tmp);
 			}
 		};
 		Calculable calc = new ExpressionBuilder("1!").withOperation(factorial).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("2!").withOperation(factorial).build();
-		assertTrue(2d == calc.calculate());
+		assertTrue(2d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("3!").withOperation(factorial).build();
-		assertTrue(6d == calc.calculate());
+		assertTrue(6d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("4!").withOperation(factorial).build();
-		assertTrue(24d == calc.calculate());
+		assertTrue(24d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("5!").withOperation(factorial).build();
-		assertTrue(120d == calc.calculate());
+		assertTrue(120d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("11!").withOperation(factorial).build();
-		assertTrue(39916800d == calc.calculate());
+		assertTrue(39916800d == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomOperators2() throws Exception {
 		CustomOperator factorial = new CustomOperator("!", true, 6, 1) {
 			@Override
-			protected double applyOperation(double[] values) {
+			protected Number applyOperation(Number[] values) {
 				double tmp = 1d;
 				int steps = 1;
-				while (steps < values[0]) {
+				while (steps < values[0].getRealPart()) {
 					tmp = tmp * (++steps);
 				}
-				return tmp;
+				return new Number(tmp);
 			}
 		};
 		Calculable calc = new ExpressionBuilder("2^2!").withOperation(factorial).build();
-		assertTrue(4d == calc.calculate());
+		assertTrue(4d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("2!^2").withOperation(factorial).build();
-		assertTrue(4d == calc.calculate());
+		assertTrue(4d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("-(3!)^-1").withOperation(factorial).build();
-		double actual = calc.calculate();
+		double actual = calc.calculate().getRealPart();
 		assertEquals(Math.pow(-6d, -1), actual, 0d);
 	}
 
@@ -328,83 +328,83 @@ public class ExpressionBuilderTest {
 	public void testCustomOperators3() throws Exception {
 		CustomOperator factorial = new CustomOperator(">=", true, 4, 2) {
 			@Override
-			protected double applyOperation(double[] values) {
-				if (values[0] >= values[1]) {
-					return 1d;
+			protected Number applyOperation(Number[] values) {
+				if (values[0].getRealPart() >= values[1].getRealPart()) {
+					return new Number(1d);
 				} else {
-					return 0d;
+					return new Number(0d);
 				}
 			}
 		};
 		Calculable calc = new ExpressionBuilder("1>=2").withOperation(factorial).build();
-		assertTrue(0d == calc.calculate());
+		assertTrue(0d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("2>=1").withOperation(factorial).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("-2>=1").withOperation(factorial).build();
-		assertTrue(0d == calc.calculate());
+		assertTrue(0d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("-2>=-1").withOperation(factorial).build();
-		assertTrue(0d == calc.calculate());
+		assertTrue(0d == calc.calculate().getRealPart());
 	}
 
 	@Test
 	public void testCustomOperators4() throws Exception {
 		CustomOperator greaterEq = new CustomOperator(">=", true, 4, 2) {
 			@Override
-			protected double applyOperation(double[] values) {
-				if (values[0] >= values[1]) {
-					return 1d;
+			protected Number applyOperation(Number[] values) {
+				if (values[0].getRealPart() >= values[1].getRealPart()) {
+					return new Number(1d);
 				} else {
-					return 0d;
+					return new Number(0d);
 				}
 			}
 		};
 		CustomOperator greater = new CustomOperator(">", true, 4, 2) {
 			@Override
-			protected double applyOperation(double[] values) {
-				if (values[0] > values[1]) {
-					return 1d;
+			protected Number applyOperation(Number[] values) {
+				if (values[0].getRealPart() > values[1].getRealPart()) {
+					return new Number(1d);
 				} else {
-					return 0d;
+					return new Number(0d);
 				}
 			}
 		};
 		CustomOperator newPlus = new CustomOperator(">=>", true, 4, 2) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] + values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() + values[1].getRealPart());
 			}
 		};
 		Calculable calc = new ExpressionBuilder("1>2").withOperation(greater).build();
-		assertTrue(0d == calc.calculate());
+		assertTrue(0d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("2>=2").withOperation(greaterEq).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1>=>2").withOperation(newPlus).build();
-		assertTrue(3d == calc.calculate());
+		assertTrue(3d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1>=>2>2").withOperation(greater).withOperation(newPlus).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1>=>2>2>=1").withOperation(greater).withOperation(newPlus)
 				.withOperation(greaterEq).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1 >=> 2 > 2 >= 1").withOperation(greater).withOperation(newPlus)
 				.withOperation(greaterEq).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1 >=> 2 >= 2 > 1").withOperation(greater).withOperation(newPlus)
 				.withOperation(greaterEq).build();
-		assertTrue(0d == calc.calculate());
+		assertTrue(0d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1 >=> 2 >= 2 > 0").withOperation(greater).withOperation(newPlus)
 				.withOperation(greaterEq).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 		calc = new ExpressionBuilder("1 >=> 2 >= 2 >= 1").withOperation(greater).withOperation(newPlus)
 				.withOperation(greaterEq).build();
-		assertTrue(1d == calc.calculate());
+		assertTrue(1d == calc.calculate().getRealPart());
 	}
 
 	@Test(expected = UnparsableExpressionException.class)
 	public void testInvalidOperator1() throws Exception {
 		CustomOperator fail = new CustomOperator("2") {
 			@Override
-			protected double applyOperation(double[] values) {
-				return 0;
+			protected Number applyOperation(Number[] values) {
+				return new Number(0);
 			}
 		};
 		new ExpressionBuilder("1").withOperation(fail).build();
@@ -414,8 +414,8 @@ public class ExpressionBuilderTest {
 	public void testInvalidCustomFunction1() throws Exception {
 		CustomFunction func = new CustomFunction("1gd") {
 			@Override
-			public double applyFunction(double... args) {
-				return 0;
+			public Number applyFunction(Number... args) {
+				return new Number(0);
 			}
 		};
 	}
@@ -424,23 +424,23 @@ public class ExpressionBuilderTest {
 	public void testInvalidCustomFunction2() throws Exception {
 		CustomFunction func = new CustomFunction("+1gd") {
 			@Override
-			public double applyFunction(double... args) {
-				return 0;
+			public Number applyFunction(Number... args) {
+				return new Number(0);
 			}
 		};
 	}
 
 	@Test
 	public void testExpressionBuilder1() throws Exception {
-		Calculable calc = new ExpressionBuilder("7*x + 3*y").withVariable("x", 1).withVariable("y", 2).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("7*x + 3*y").withVariable("x", new Number(1)).withVariable("y", new Number(2)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == 13d);
 	}
 
 	@Test
 	public void testExpressionBuilder2() throws Exception {
-		Calculable calc = new ExpressionBuilder("7*x + 3*y").withVariable("x", 1).withVariable("y", 2).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("7*x + 3*y").withVariable("x", new Number(1)).withVariable("y", new Number(2)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == 13d);
 	}
 
@@ -448,9 +448,9 @@ public class ExpressionBuilderTest {
 	public void testExpressionBuilder3() throws Exception {
 		double varX = 1.3d;
 		double varY = 4.22d;
-		Calculable calc = new ExpressionBuilder("7*x + 3*y - log(y/x*12)^y").withVariable("x", varX)
-				.withVariable("y", varY).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("7*x + 3*y - log(y/x*12)^y").withVariable("x", new Number(varX))
+				.withVariable("y", new Number(varY)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == 7 * varX + 3 * varY - Math.pow(Math.log(varY / varX * 12), varY));
 	}
 
@@ -458,15 +458,15 @@ public class ExpressionBuilderTest {
 	public void testExpressionBuilder4() throws Exception {
 		double varX = 1.3d;
 		double varY = 4.22d;
-		Calculable calc = new ExpressionBuilder("7*x + 3*y - log(y/x*12)^y").withVariable("x", varX)
-				.withVariable("y", varY).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("7*x + 3*y - log(y/x*12)^y").withVariable("x", new Number(varX))
+				.withVariable("y", new Number(varY)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == 7 * varX + 3 * varY - Math.pow(Math.log(varY / varX * 12), varY));
 		varX = 1.79854d;
 		varY = 9281.123d;
-		calc.setVariable("x", varX);
-		calc.setVariable("y", varY);
-		result = calc.calculate();
+		calc.setVariable("x", new Number(varX));
+		calc.setVariable("y", new Number(varY));
+		result = calc.calculate().getRealPart();
 		assertTrue(result == 7 * varX + 3 * varY - Math.pow(Math.log(varY / varX * 12), varY));
 	}
 
@@ -474,8 +474,8 @@ public class ExpressionBuilderTest {
 	public void testExpressionBuilder5() throws Exception {
 		double varX = 1.3d;
 		double varY = 4.22d;
-		Calculable calc = new ExpressionBuilder("3*y").withVariable("x", varX).withVariable("y", varY).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("3*y").withVariable("x", new Number(varX)).withVariable("y", new Number(varY)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == 3 * varY);
 	}
 
@@ -485,26 +485,26 @@ public class ExpressionBuilderTest {
 		double varY = 4.22d;
 		double varZ = 4.22d;
 		Calculable calc = new ExpressionBuilder("x * y * z").withVariableNames("x", "y", "z").build();
-		calc.setVariable("x", varX);
-		calc.setVariable("y", varY);
-		calc.setVariable("z", varZ);
-		double result = calc.calculate();
+		calc.setVariable("x", new Number(varX));
+		calc.setVariable("y", new Number(varY));
+		calc.setVariable("z", new Number(varZ));
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == varX * varY * varZ);
 	}
 
 	@Test
 	public void testExpressionBuilder7() throws Exception {
 		double varX = 1.3d;
-		Calculable calc = new ExpressionBuilder("log(sin(x))").withVariable("x", varX).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("log(sin(x))").withVariable("x", new Number(varX)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.log(Math.sin(varX)));
 	}
 
 	@Test
 	public void testExpressionBuilder8() throws Exception {
 		double varX = 1.3d;
-		Calculable calc = new ExpressionBuilder("log(sin(x))").withVariable("x", varX).build();
-		double result = calc.calculate();
+		Calculable calc = new ExpressionBuilder("log(sin(x))").withVariable("x", new Number(varX)).build();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == Math.log(Math.sin(varX)));
 	}
 
@@ -512,28 +512,28 @@ public class ExpressionBuilderTest {
 	public void testSameName() throws Exception {
 		CustomFunction custom = new CustomFunction("bar") {
 			@Override
-			public double applyFunction(double... values) {
-				return values[0] / 2;
+			public Number applyFunction(Number... values) {
+				return new Number(values[0].getRealPart() / 2);
 			}
 		};
 		double varBar = 1.3d;
-		Calculable calc = new ExpressionBuilder("f(bar)=bar(bar)").withVariable("bar", varBar)
+		Calculable calc = new ExpressionBuilder("f(bar)=bar(bar)").withVariable("bar", new Number(varBar))
 				.withCustomFunction(custom).build();
-		double result = calc.calculate();
+		double result = calc.calculate().getRealPart();
 		assertTrue(result == varBar / 2);
 	}
 
 	@Test(expected = UnparsableExpressionException.class)
 	public void testInvalidFunction() throws Exception {
 		double varY = 4.22d;
-		Calculable calc = new ExpressionBuilder("3*invalid_function(y)").withVariable("y", varY).build();
+		Calculable calc = new ExpressionBuilder("3*invalid_function(y)").withVariable("y", new Number(varY)).build();
 		calc.calculate();
 	}
 
 	@Test(expected = UnparsableExpressionException.class)
 	public void testMissingVar() throws Exception {
 		double varY = 4.22d;
-		Calculable calc = new ExpressionBuilder("3*y*z").withVariable("y", varY).build();
+		Calculable calc = new ExpressionBuilder("3*y*z").withVariable("y", new Number(varY)).build();
 		calc.calculate();
 	}
 
@@ -597,7 +597,7 @@ public class ExpressionBuilderTest {
 		expr = "2 + 4";
 		expected = 6d;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -607,7 +607,7 @@ public class ExpressionBuilderTest {
 		expr = "1 * 1.5 + 1";
 		expected = 1 * 1.5 + 1;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -617,7 +617,7 @@ public class ExpressionBuilderTest {
 		String expr = "log(x) ^ sin(y)";
 		double expected = Math.pow(Math.log(x), Math.sin(y));
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x", "y").build();
-		assertTrue(expected == calc.calculate(x, y));
+		assertTrue(expected == calc.calculate(new Number(x), new Number(y)).getRealPart());
 	}
 
 	@Test
@@ -625,7 +625,7 @@ public class ExpressionBuilderTest {
 		String expr = "log(2.5333333333)^(0-1)";
 		double expected = Math.pow(Math.log(2.5333333333d), -1);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -633,7 +633,7 @@ public class ExpressionBuilderTest {
 		String expr = "2.5333333333^(0-1)";
 		double expected = Math.pow(2.5333333333d, -1);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -641,7 +641,7 @@ public class ExpressionBuilderTest {
 		String expr = "2 * 17.41 + (12*2)^(0-1)";
 		double expected = 2 * 17.41d + Math.pow((12 * 2), -1);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -649,7 +649,7 @@ public class ExpressionBuilderTest {
 		String expr = "2.5333333333 * 17.41 + (12*2)^log(2.764)";
 		double expected = 2.5333333333d * 17.41d + Math.pow((12 * 2), Math.log(2.764d));
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -657,7 +657,7 @@ public class ExpressionBuilderTest {
 		String expr = "2.5333333333/2 * 17.41 + (12*2)^(log(2.764) - sin(5.6664))";
 		double expected = 2.5333333333d / 2 * 17.41d + Math.pow((12 * 2), Math.log(2.764d) - Math.sin(5.6664d));
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -667,7 +667,7 @@ public class ExpressionBuilderTest {
 		double y = Math.PI;
 		double expected = x * x - 2 * y;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x", "y").build();
-		assertTrue(expected == calc.calculate(x, y));
+		assertTrue(expected == calc.calculate(new Number(x), new Number(y)).getRealPart());
 	}
 
 	@Test
@@ -675,7 +675,7 @@ public class ExpressionBuilderTest {
 		String expr = "-3";
 		double expected = -3;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -683,7 +683,7 @@ public class ExpressionBuilderTest {
 		String expr = "-3 * -24.23";
 		double expected = -3 * -24.23d;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -693,7 +693,7 @@ public class ExpressionBuilderTest {
 		expr = "2+3*4-12";
 		expected = 2 + 3 * 4 - 12;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -701,7 +701,7 @@ public class ExpressionBuilderTest {
 		String expr = "-2 * 24/log(2) -2";
 		double expected = -2 * 24 / Math.log(2) - 2;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -710,7 +710,7 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / Math.pow(Math.log(x), -2) + 14 * 6;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -719,7 +719,7 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / Math.pow(Math.log(x), -2) + 14 * 6;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -728,7 +728,7 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / (Math.pow(Math.log(x), -2) + 14 * 6) - Math.sin(x);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("foo").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -736,7 +736,7 @@ public class ExpressionBuilderTest {
 		String expr = "3+4-log(23.2)^(2-1) * -1";
 		double expected = 3 + 4 - Math.pow(Math.log(23.2), (2 - 1)) * -1;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -744,7 +744,7 @@ public class ExpressionBuilderTest {
 		String expr = "+3+4-+log(23.2)^(2-1) * + 1";
 		double expected = 3 + 4 - Math.log(23.2d);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -752,7 +752,7 @@ public class ExpressionBuilderTest {
 		String expr = "14 + -(1 / 2.22^3)";
 		double expected = 14 + -(1d / Math.pow(2.22d, 3d));
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -760,7 +760,7 @@ public class ExpressionBuilderTest {
 		String expr = "12^-+-+-+-+-+-+---2";
 		double expected = Math.pow(12, -2);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -768,7 +768,7 @@ public class ExpressionBuilderTest {
 		String expr = "12^-+-+-+-+-+-+---2 * (-14) / 2 ^ -log(2.22323) ";
 		double expected = Math.pow(12, -2) * -14 / Math.pow(2, -Math.log(2.22323));
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -776,7 +776,7 @@ public class ExpressionBuilderTest {
 		String expr = "24.3343 % 3";
 		double expected = 24.3343 % 3;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -786,7 +786,7 @@ public class ExpressionBuilderTest {
 		expr = "2+4*5";
 		expected = 2 + 4 * 5;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -794,7 +794,7 @@ public class ExpressionBuilderTest {
 		String expr = "24.3343 % 3 * 20 ^ -(2.334 % log(2 / 14))";
 		double expected = 24.3343d % 3 * Math.pow(20, -(2.334 % Math.log(2d / 14d)));
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -803,7 +803,7 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / Math.pow(Math.log(x), -2) + 14 * 6;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("y_x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -812,7 +812,7 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / Math.pow(Math.log(x), -2) + 14 * 6;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("y_2x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -821,7 +821,7 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / Math.pow(Math.log(x), -2) + 14 * 6;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("_y").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -829,7 +829,7 @@ public class ExpressionBuilderTest {
 		String expr = "-2 + + (+4) +(4)";
 		double expected = -2 + 4 + 4;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -839,7 +839,7 @@ public class ExpressionBuilderTest {
 		expr = "2+4 * 5";
 		expected = 2 + 4 * 5;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -849,7 +849,7 @@ public class ExpressionBuilderTest {
 		expr = "(2+4)*5";
 		expected = (2 + 4) * 5;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -859,7 +859,7 @@ public class ExpressionBuilderTest {
 		expr = "(2+4)*5 + 2.5*2";
 		expected = (2 + 4) * 5 + 2.5 * 2;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -869,7 +869,7 @@ public class ExpressionBuilderTest {
 		expr = "(2+4)*5 + 10/2";
 		expected = (2 + 4) * 5 + 10 / 2;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -879,7 +879,7 @@ public class ExpressionBuilderTest {
 		expr = "(2 * 3 +4)*5 + 10/2";
 		expected = (2 * 3 + 4) * 5 + 10 / 2;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -889,7 +889,7 @@ public class ExpressionBuilderTest {
 		expr = "(2 * 3 +4)*5 +4 + 10/2";
 		expected = (2 * 3 + 4) * 5 + 4 + 10 / 2;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test(expected = UnparsableExpressionException.class)
@@ -919,14 +919,14 @@ public class ExpressionBuilderTest {
 		String expr;
 		expr = "cos(cos_1)";
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("cos_1").build();
-		assertTrue(calc.calculate(1d) == Math.cos(1d));
+		assertTrue(calc.calculate(new Number(1d)).getRealPart() == Math.cos(1d));
 	}
 
 	@Test
 	public void testGetExpression() throws Exception {
 		String expr;
 		expr = "2 + 4 - cbrt(2^3)";
-		String expected = "2 4 + 2 3 ^ cbrt -";
+		String expected = "2.0 4.0 + 2.0 3.0 ^ cbrt -";
 		Calculable calc = new ExpressionBuilder(expr).build();
 		assertEquals(expected, calc.getExpression());
 	}
@@ -937,7 +937,7 @@ public class ExpressionBuilderTest {
 		double expected;
 		expr = "2.2232^0.1";
 		expected = Math.pow(2.2232d, 0.1d);
-		double actual = new ExpressionBuilder(expr).build().calculate();
+		double actual = new ExpressionBuilder(expr).build().calculate().getRealPart();
 		assertTrue(expected == actual);
 	}
 
@@ -948,7 +948,7 @@ public class ExpressionBuilderTest {
 		expr = "(sin(12) + log(34)) * 3.42 - cos(2.234-log(2))";
 		expected = (Math.sin(12) + Math.log(34)) * 3.42 - Math.cos(2.234 - Math.log(2));
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -958,7 +958,7 @@ public class ExpressionBuilderTest {
 		expr = "2^3";
 		expected = Math.pow(2, 3);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -968,7 +968,7 @@ public class ExpressionBuilderTest {
 		expr = "24 + 4 * 2^3";
 		expected = 24 + 4 * Math.pow(2, 3);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -979,7 +979,7 @@ public class ExpressionBuilderTest {
 		expr = "24 + 4 * 2^x";
 		expected = 24 + 4 * Math.pow(2, x);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -990,7 +990,7 @@ public class ExpressionBuilderTest {
 		expr = "(24 + 4) * 2^log(x)";
 		expected = (24 + 4) * Math.pow(2, Math.log(x));
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -1000,7 +1000,7 @@ public class ExpressionBuilderTest {
 		expr = "log(1) * sin(0)";
 		expected = Math.log(1) * Math.sin(0);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -1011,7 +1011,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.cbrt(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1023,7 +1023,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.cos(x) - (1 / Math.cbrt(x));
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1037,9 +1037,9 @@ public class ExpressionBuilderTest {
 			expected = Math.acos(x) * Math.expm1(Math.asin(x)) - Math.exp(Math.atan(x)) + Math.floor(x) + Math.cosh(x)
 					- Math.sinh(Math.cbrt(x));
 			if (Double.isNaN(expected)) {
-				assertTrue(Double.isNaN(calc.calculate(x)));
+				assertTrue(Double.isNaN(calc.calculate(new Number(x)).getRealPart()));
 			} else {
-				assertTrue(expected == calc.calculate(x));
+				assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 			}
 		}
 	}
@@ -1053,9 +1053,9 @@ public class ExpressionBuilderTest {
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.acos(x);
 			if (Double.isNaN(expected)) {
-				assertTrue(Double.isNaN(calc.calculate(x)));
+				assertTrue(Double.isNaN(calc.calculate(new Number(x)).getRealPart()));
 			} else {
-				assertTrue(expected == calc.calculate(x));
+				assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 			}
 		}
 	}
@@ -1069,9 +1069,9 @@ public class ExpressionBuilderTest {
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.expm1(x);
 			if (Double.isNaN(expected)) {
-				assertTrue(Double.isNaN(calc.calculate(x)));
+				assertTrue(Double.isNaN(calc.calculate(new Number(x)).getRealPart()));
 			} else {
-				assertTrue(expected == calc.calculate(x));
+				assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 			}
 		}
 	}
@@ -1085,9 +1085,9 @@ public class ExpressionBuilderTest {
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.asin(x);
 			if (Double.isNaN(expected)) {
-				assertTrue(Double.isNaN(calc.calculate(x)));
+				assertTrue(Double.isNaN(calc.calculate(new Number(x)).getRealPart()));
 			} else {
-				assertTrue(expected == calc.calculate(x));
+				assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 			}
 		}
 	}
@@ -1100,7 +1100,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.exp(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1112,7 +1112,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.floor(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1124,7 +1124,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.cosh(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1136,7 +1136,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.sinh(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1148,7 +1148,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.cbrt(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1160,7 +1160,7 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.tanh(x);
-			assertTrue(expected == calc.calculate(x));
+			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 		}
 	}
 
@@ -1171,7 +1171,7 @@ public class ExpressionBuilderTest {
 		expr = "log(1)";
 		expected = 0d;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -1181,7 +1181,7 @@ public class ExpressionBuilderTest {
 		expr = "sin(0)";
 		expected = 0d;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -1191,7 +1191,7 @@ public class ExpressionBuilderTest {
 		expr = "ceil(2.3) +1";
 		expected = Math.ceil(2.3) + 1;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -1203,7 +1203,7 @@ public class ExpressionBuilderTest {
 		expr = "ceil(x) + 1 / y * abs(1.4)";
 		expected = Math.ceil(x) + 1 / y * Math.abs(1.4);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x", "y").build();
-		assertTrue(expected == calc.calculate(x, y));
+		assertTrue(expected == calc.calculate(new Number(x), new Number(y)).getRealPart());
 	}
 
 	@Test
@@ -1214,7 +1214,7 @@ public class ExpressionBuilderTest {
 		expr = "tan(x)";
 		expected = Math.tan(x);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
 
 	@Test
@@ -1225,7 +1225,7 @@ public class ExpressionBuilderTest {
 		expr = "2^3.4223232 + tan(e)";
 		expected = Math.pow(2, 3.4223232d) + Math.tan(Math.E);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("e").build();
-		assertTrue(expected == calc.calculate(e));
+		assertTrue(expected == calc.calculate(new Number(e)).getRealPart());
 	}
 
 	@Test
@@ -1236,9 +1236,9 @@ public class ExpressionBuilderTest {
 		expr = "cbrt(x)";
 		expected = Math.cbrt(x);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
-		assertTrue(expected == calc.calculate(x));
+		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
 	}
-
+	
 	@Test(expected = UnparsableExpressionException.class)
 	public void testPostfixInvalidVariableName() throws Exception {
 		String expr;
@@ -1248,7 +1248,17 @@ public class ExpressionBuilderTest {
 		expr = "x * pi";
 		expected = x * log;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x", "log").build();
-		assertTrue(expected == calc.calculate(x, log));
+		assertTrue(expected == calc.calculate(new Number(x), new Number(log)).getRealPart());
+	}
+
+	@Test(expected = UnparsableExpressionException.class)
+	public void testPostfixInvalidVariableName2() throws Exception {
+		Calculable calc = new ExpressionBuilder("4 * i").withVariableNames("i").build();
+	}
+
+	@Test(expected = UnparsableExpressionException.class)
+	public void testPostfixInvalidVariableName3() throws Exception {
+		Calculable calc = new ExpressionBuilder("4 * i").withVariable("i",new Number(4)).build();
 	}
 
 	@Test
@@ -1258,7 +1268,7 @@ public class ExpressionBuilderTest {
 		expr = "(3 + 3 * 14) * (2 * (24-17) - 14)/((34) -2)";
 		expected = (3 + 3 * 14) * (2 * (24 - 17) - 14) / ((34) - 2);
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate());
+		assertTrue(expected == calc.calculate().getRealPart());
 	}
 
 	@Test
@@ -1270,7 +1280,23 @@ public class ExpressionBuilderTest {
 		expr = "x * pi";
 		expected = x * pi;
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x", "pi").build();
-		assertTrue(expected == calc.calculate(x, pi));
+		assertTrue(expected == calc.calculate(new Number(x), new Number(pi)).getRealPart());
+	}
+	
+	@Test
+	public void testComplex1() throws Exception{
+		Number expected=new Number(2,2);
+		String expr="1 + 1i + 1 + 1i";
+		Calculable calc=new ExpressionBuilder(expr).build();
+		assertEquals(expected, calc.calculate());
+	}
+
+	@Test
+	public void testComplex2() throws Exception{
+		Number expected=new Number(2,0);
+		String expr="1 + 1i + 1 - 1i";
+		Calculable calc=new ExpressionBuilder(expr).build();
+		assertEquals(expected, calc.calculate());
 	}
 
 	@Test
@@ -1289,9 +1315,9 @@ public class ExpressionBuilderTest {
 		long time = System.currentTimeMillis() + (1000 * timeout);
 		int count = 0;
 		while (time > System.currentTimeMillis()) {
-			calc.setVariable("x", rnd.nextDouble());
-			calc.setVariable("y", rnd.nextDouble());
-			val = calc.calculate();
+			calc.setVariable("x", new Number(rnd.nextDouble()));
+			calc.setVariable("y", new Number(rnd.nextDouble()));
+			val = calc.calculate().getRealPart();
 			count++;
 		}
 		System.out.println("\n:: running simple benchmarks [" + timeout + " seconds]");

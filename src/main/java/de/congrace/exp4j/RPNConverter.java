@@ -45,7 +45,7 @@ abstract class RPNConverter {
 		return exprBuilder.toString();
 	}
 
-	static RPNExpression toRPNExpression(String infix, Map<String, Double> variables,
+	static RPNExpression toRPNExpression(String infix, Map<String, Number> variables,
 			Map<String, CustomFunction> customFunctions, Map<String, CustomOperator> operators)
 			throws UnknownFunctionException, UnparsableExpressionException {
 		final Tokenizer tokenizer = new Tokenizer(variables.keySet(), customFunctions, operators);

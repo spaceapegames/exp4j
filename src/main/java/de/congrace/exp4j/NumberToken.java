@@ -27,7 +27,7 @@ import java.util.Stack;
  */
 class NumberToken extends CalculationToken {
 
-	private final double doubleValue;
+	private final Number value;
 
 	/**
 	 * construct a new {@link NumberToken}
@@ -35,9 +35,14 @@ class NumberToken extends CalculationToken {
 	 * @param value
 	 *            the value of the number as a {@link String}
 	 */
-	NumberToken(String value) {
-		super(value);
-		this.doubleValue = Double.parseDouble(value);
+	NumberToken(String real) {
+		super(real);
+		this.value = new Number(Double.parseDouble(real));
+	}
+
+	NumberToken(String real,String imaginary) {
+		super(real + (Double.parseDouble(imaginary) < 0 ? "-" : "+")  + Math.abs(Double.parseDouble(imaginary)) + "i");
+		this.value = new Number(Double.parseDouble(real),Double.parseDouble(imaginary));
 	}
 
 	@Override
@@ -55,12 +60,12 @@ class NumberToken extends CalculationToken {
 	}
 
 	@Override
-	void mutateStackForCalculation(Stack<Double> stack, Map<String, Double> variableValues) {
-		stack.push(this.doubleValue);
+	void mutateStackForCalculation(Stack<Number> stack, Map<String, Number> variableValues) {
+		stack.push(this.value);
 	}
 
 	@Override
 	void mutateStackForInfixTranslation(Stack<Token> operatorStack, StringBuilder output) {
-		output.append(this.getValue()).append(' ');
+		output.append(this.value.toString()).append(' ');
 	}
 }

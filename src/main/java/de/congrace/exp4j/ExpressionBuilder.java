@@ -15,7 +15,7 @@ import java.util.Map.Entry;
  * 
  */
 public class ExpressionBuilder {
-	private final Map<String, Double> variables = new LinkedHashMap<String, Double>();
+	private final Map<String, Number> variables = new LinkedHashMap<String, Number>();
 
 	private final Map<String, CustomFunction> customFunctions;
 
@@ -44,47 +44,60 @@ public class ExpressionBuilder {
 		return Arrays.asList('!', '#', '§', '$', '&', ';', ':', '~', '<', '>', '|', '=');
 	}
 
+	private static boolean isReal(Number... numbers){
+		for (Number n:numbers){
+			if (!n.isReal()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	private Map<String, CustomOperator> getBuiltinOperators() {
 		CustomOperator add = new CustomOperator("+") {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] + values[1];
+			protected Number applyOperation(Number[] values) {
+				if (isReal(values)){
+					return new Number(values[0].getRealPart() + values[1].getRealPart());
+				}else{
+					return new Number(values[0].getRealPart() + values[1].getRealPart(),values[0].getImaginaryPart() + values[1].getImaginaryPart());
+				}
 			}
 		};
 		CustomOperator sub = new CustomOperator("-") {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] - values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() - values[1].getRealPart());
 			}
 		};
 		CustomOperator div = new CustomOperator("/", 3) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] / values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() / values[1].getRealPart());
 			}
 		};
 		CustomOperator mul = new CustomOperator("*", 3) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] * values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() * values[1].getRealPart());
 			}
 		};
 		CustomOperator mod = new CustomOperator("%", false, 3) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] % values[1];
+			protected Number applyOperation(Number[] values) {
+				return new Number(values[0].getRealPart() % values[1].getRealPart());
 			}
 		};
 		CustomOperator umin = new CustomOperator("\'", false, 7, 1) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return -values[0];
+			protected Number applyOperation(Number[] values) {
+				return new Number(-values[0].getRealPart());
 			}
 		};
 		CustomOperator pow = new CustomOperator("^", false, 5, 2) {
 			@Override
-			protected double applyOperation(double[] values) {
-				return Math.pow(values[0], values[1]);
+			protected Number applyOperation(Number[] values) {
+				return new Number(Math.pow(values[0].getRealPart(), values[1].getRealPart()));
 			}
 		};
 		Map<String, CustomOperator> operations = new HashMap<String, CustomOperator>();
@@ -102,104 +115,104 @@ public class ExpressionBuilder {
 		try {
 			CustomFunction abs = new CustomFunction("abs") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.abs(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.abs(args[0].getRealPart()));
 				}
 			};
 			CustomFunction acos = new CustomFunction("acos") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.acos(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.acos(args[0].getRealPart()));
 				}
 			};
 			CustomFunction asin = new CustomFunction("asin") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.asin(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.asin(args[0].getRealPart()));
 				}
 			};
 			CustomFunction atan = new CustomFunction("atan") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.atan(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.atan(args[0].getRealPart()));
 				}
 			};
 			CustomFunction cbrt = new CustomFunction("cbrt") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.cbrt(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.cbrt(args[0].getRealPart()));
 				}
 			};
 			CustomFunction ceil = new CustomFunction("ceil") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.ceil(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.ceil(args[0].getRealPart()));
 				}
 			};
 			CustomFunction cos = new CustomFunction("cos") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.cos(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.cos(args[0].getRealPart()));
 				}
 			};
 			CustomFunction cosh = new CustomFunction("cosh") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.cosh(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.cosh(args[0].getRealPart()));
 				}
 			};
 			CustomFunction exp = new CustomFunction("exp") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.exp(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.exp(args[0].getRealPart()));
 				}
 			};
 			CustomFunction expm1 = new CustomFunction("expm1") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.expm1(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.expm1(args[0].getRealPart()));
 				}
 			};
 			CustomFunction floor = new CustomFunction("floor") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.floor(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.floor(args[0].getRealPart()));
 				}
 			};
 			CustomFunction log = new CustomFunction("log") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.log(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.log(args[0].getRealPart()));
 				}
 			};
 			CustomFunction sine = new CustomFunction("sin") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.sin(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.sin(args[0].getRealPart()));
 				}
 			};
 			CustomFunction sinh = new CustomFunction("sinh") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.sinh(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.sinh(args[0].getRealPart()));
 				}
 			};
 			CustomFunction sqrt = new CustomFunction("sqrt") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.sqrt(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.sqrt(args[0].getRealPart()));
 				}
 			};
 			CustomFunction tan = new CustomFunction("tan") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.tan(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.tan(args[0].getRealPart()));
 				}
 			};
 			CustomFunction tanh = new CustomFunction("tanh") {
 				@Override
-				public double applyFunction(double... args) {
-					return Math.tanh(args[0]);
+				public Number applyFunction(Number... args) {
+					return new Number(Math.tanh(args[0].getRealPart()));
 				}
 			};
 			Map<String, CustomFunction> customFunctions = new HashMap<String, CustomFunction>();
@@ -250,6 +263,9 @@ public class ExpressionBuilder {
 				throw new UnparsableExpressionException("Variable '" + varName
 						+ "' cannot have the same name as a function");
 			}
+			if (varName.equals("i")){
+				throw new UnparsableExpressionException("'i' can not be used as a variable name");
+			}
 		}
 		builtInOperators.putAll(customOperators);
 		return RPNConverter.toRPNExpression(expression, variables, customFunctions, builtInOperators);
@@ -283,7 +299,7 @@ public class ExpressionBuilder {
 	 *            the value e.g. 2.32d
 	 * @return the {@link ExpressionBuilder} instance
 	 */
-	public ExpressionBuilder withVariable(String variableName, double value) {
+	public ExpressionBuilder withVariable(String variableName, Number value) {
 		variables.put(variableName, value);
 		return this;
 	}
@@ -309,8 +325,8 @@ public class ExpressionBuilder {
 	 *            a map of variable names to variable values
 	 * @return the {@link ExpressionBuilder} instance
 	 */
-	public ExpressionBuilder withVariables(Map<String, Double> variableMap) {
-		for (Entry<String, Double> v : variableMap.entrySet()) {
+	public ExpressionBuilder withVariables(Map<String, Number> variableMap) {
+		for (Entry<String, Number> v : variableMap.entrySet()) {
 			variables.put(v.getKey(), v.getValue());
 		}
 		return this;

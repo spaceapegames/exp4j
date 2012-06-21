@@ -3,17 +3,17 @@ package de.congrace.exp4j;
 import java.util.Stack;
 
 abstract class Token {
-	private final String value;
+	private final String originalValue;
 
 	/**
 	 * construct a new {@link Token}
 	 * 
-	 * @param value
+	 * @param originalValue
 	 *            the value of the {@link Token}
 	 */
-	Token(String value) {
+	Token(String originalValue) {
 		super();
-		this.value = value;
+		this.originalValue = originalValue;
 	}
 
 	/**
@@ -22,7 +22,7 @@ abstract class Token {
 	 * @return the value
 	 */
 	String getValue() {
-		return value;
+		return originalValue;
 	}
 
 	abstract void mutateStackForInfixTranslation(Stack<Token> operatorStack, StringBuilder output);

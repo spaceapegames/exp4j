@@ -49,5 +49,5 @@ public abstract class CustomFunction {
 		this.name = name;
 	}
 
-	public abstract double applyFunction(double... args);
+	public abstract Number applyFunction(Number... args);
 }

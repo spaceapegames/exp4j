@@ -41,8 +41,8 @@ class FunctionToken extends CalculationToken {
 	}
 
 	@Override
-	void mutateStackForCalculation(Stack<Double> stack, Map<String, Double> variableValues) {
-		double[] args = new double[function.argc];
+	void mutateStackForCalculation(Stack<Number> stack, Map<String, Number> variableValues) {
+		Number[] args = new Number[function.argc];
 		for (int i = 0; i < function.argc; i++) {
 			args[i] = stack.pop();
 		}
