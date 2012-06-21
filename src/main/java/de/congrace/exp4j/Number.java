@@ -3,15 +3,12 @@ package de.congrace.exp4j;
 public class Number {
 	private double realPart;
 	private double imaginaryPart;
-	private boolean real;
 	
 	public Number(double realPart) {
-		real=true;
 		this.realPart=realPart;
 	}
 	
 	public Number(double realPart, double imaginaryPart) {
-		this.real=false;
 		this.realPart = realPart;
 		this.imaginaryPart = imaginaryPart;
 	}
@@ -26,7 +23,7 @@ public class Number {
 	
 	@Override
 	public String toString() {
-		if (real){
+		if (isReal()){
 			return String.valueOf(realPart);
 		}else{
 			return realPart + (imaginaryPart < 0 ? "-" : "+") + Math.abs(imaginaryPart) + "i";
@@ -62,7 +59,7 @@ public class Number {
 	}
 
 	public boolean isReal() {
-		return real;
+		return imaginaryPart == 0d;
 	}
 	
 	

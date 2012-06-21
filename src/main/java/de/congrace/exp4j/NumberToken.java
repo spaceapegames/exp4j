@@ -36,13 +36,13 @@ class NumberToken extends CalculationToken {
 	 *            the value of the number as a {@link String}
 	 */
 	NumberToken(String real) {
-		super(real);
-		this.value = new Number(Double.parseDouble(real));
+		super(real.trim());
+		this.value = new Number(Double.parseDouble(real.trim()));
 	}
 
 	NumberToken(String real,String imaginary) {
-		super(real + (Double.parseDouble(imaginary) < 0 ? "-" : "+")  + Math.abs(Double.parseDouble(imaginary)) + "i");
-		this.value = new Number(Double.parseDouble(real),Double.parseDouble(imaginary));
+		super(real.trim() + (Double.parseDouble(imaginary.trim()) < 0 ? "-" : "+")  + Math.abs(Double.parseDouble(imaginary.trim())) + "i");
+		this.value = new Number(Double.parseDouble(real.trim()),Double.parseDouble(imaginary.trim()));
 	}
 
 	@Override

@@ -728,7 +728,8 @@ public class ExpressionBuilderTest {
 		double x = 1.334d;
 		double expected = -2 * 33.34 / (Math.pow(Math.log(x), -2) + 14 * 6) - Math.sin(x);
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("foo").build();
-		assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
+		double result=calc.calculate(new Number(x)).getRealPart();
+		assertTrue(expected == result);
 	}
 
 	@Test
@@ -776,7 +777,8 @@ public class ExpressionBuilderTest {
 		String expr = "24.3343 % 3";
 		double expected = 24.3343 % 3;
 		Calculable calc = new ExpressionBuilder(expr).build();
-		assertTrue(expected == calc.calculate().getRealPart());
+		double result=calc.calculate().getRealPart();
+		assertTrue(expected == result);
 	}
 
 	@Test
@@ -1023,7 +1025,8 @@ public class ExpressionBuilderTest {
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x").build();
 		for (double x = -10; x < 10; x = x + 0.5d) {
 			expected = Math.cos(x) - (1 / Math.cbrt(x));
-			assertTrue(expected == calc.calculate(new Number(x)).getRealPart());
+			double result=calc.calculate(new Number(x)).getRealPart();
+			assertTrue(expected == result);
 		}
 	}
 

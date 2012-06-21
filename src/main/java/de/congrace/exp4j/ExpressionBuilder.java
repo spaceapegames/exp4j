@@ -44,60 +44,80 @@ public class ExpressionBuilder {
 		return Arrays.asList('!', '#', '§', '$', '&', ';', ':', '~', '<', '>', '|', '=');
 	}
 
-	private static boolean isReal(Number... numbers){
-		for (Number n:numbers){
-			if (!n.isReal()){
+	private static boolean isReal(Number... numbers) {
+		for (Number n : numbers) {
+			if (!n.isReal()) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	private Map<String, CustomOperator> getBuiltinOperators() {
 		CustomOperator add = new CustomOperator("+") {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				if (isReal(values)){
-					return new Number(values[0].getRealPart() + values[1].getRealPart());
-				}else{
-					return new Number(values[0].getRealPart() + values[1].getRealPart(),values[0].getImaginaryPart() + values[1].getImaginaryPart());
-				}
+				return new Number(values[0].getRealPart() + values[1].getRealPart(), values[0].getImaginaryPart()
+						+ values[1].getImaginaryPart());
 			}
 		};
 		CustomOperator sub = new CustomOperator("-") {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				return new Number(values[0].getRealPart() - values[1].getRealPart());
+				return new Number(values[0].getRealPart() - values[1].getRealPart(), values[0].getImaginaryPart()
+						- values[1].getImaginaryPart());
 			}
 		};
 		CustomOperator div = new CustomOperator("/", 3) {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				return new Number(values[0].getRealPart() / values[1].getRealPart());
+				double real = (values[0].getRealPart() * values[1].getRealPart() + values[0].getImaginaryPart()
+						* values[1].getImaginaryPart())
+						/ (Math.pow(values[1].getRealPart(), 2) + Math.pow(values[1].getImaginaryPart(), 2));
+				double imaginary = (values[0].getImaginaryPart() * values[1].getRealPart() - values[0].getRealPart()
+						* values[1].getImaginaryPart())
+						/ (Math.pow(values[1].getRealPart(), 2) + Math.pow(values[1].getImaginaryPart(), 2));
+				return new Number(real, imaginary);
 			}
 		};
 		CustomOperator mul = new CustomOperator("*", 3) {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				return new Number(values[0].getRealPart() * values[1].getRealPart());
+				return new Number(values[0].getRealPart() * values[1].getRealPart() - values[0].getImaginaryPart()
+						* values[1].getImaginaryPart(), values[0].getRealPart() * values[1].getImaginaryPart()
+						+ values[0].getImaginaryPart() * values[1].getRealPart());
 			}
 		};
 		CustomOperator mod = new CustomOperator("%", false, 3) {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				return new Number(values[0].getRealPart() % values[1].getRealPart());
+				if (isReal(values)){
+					return new Number(values[0].getRealPart() % values[1].getRealPart());
+				}else{
+					throw new RuntimeException("unable to use the modulo operator '%' with complex numbers");
+				}
 			}
 		};
 		CustomOperator umin = new CustomOperator("\'", false, 7, 1) {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				return new Number(-values[0].getRealPart());
+				return new Number(-values[0].getRealPart(), -values[0].getImaginaryPart());
 			}
 		};
 		CustomOperator pow = new CustomOperator("^", false, 5, 2) {
 			@Override
 			protected Number applyOperation(Number[] values) {
-				return new Number(Math.pow(values[0].getRealPart(), values[1].getRealPart()));
+				if (values[0].isReal() && values[1].isReal()) {
+					return new Number(Math.pow(values[0].getRealPart(), values[1].getRealPart()));
+				} else if (values[0].isReal() && !values[1].isReal()) {
+					double scale = Math.log(values[0].getRealPart());
+					double real = values[1].getRealPart() * scale;
+					double imag = values[1].getImaginaryPart() * scale;
+					double result = Math.pow(Math.E, real);
+					return new Number(Math.cos(imag) * result, Math.sin(imag) * result);
+				} else {
+					throw new RuntimeException("Can't calculate powers of complex numbers since these are not functions");
+				}
 			}
 		};
 		Map<String, CustomOperator> operations = new HashMap<String, CustomOperator>();
@@ -263,7 +283,7 @@ public class ExpressionBuilder {
 				throw new UnparsableExpressionException("Variable '" + varName
 						+ "' cannot have the same name as a function");
 			}
-			if (varName.equals("i")){
+			if (varName.equals("i")) {
 				throw new UnparsableExpressionException("'i' can not be used as a variable name");
 			}
 		}

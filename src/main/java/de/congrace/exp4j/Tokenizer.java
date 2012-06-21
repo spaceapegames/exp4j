@@ -96,9 +96,9 @@ class Tokenizer {
 				if (complex){
 					i += numberLen + complexLen - 1;
 					if (imgNegative){
-						lastToken = new NumberToken(valueBuilder.toString(),String.valueOf(-1.0d * Double.parseDouble(imgBuilder.toString())));
+						lastToken = new NumberToken(valueBuilder.toString().trim(),String.valueOf(-1.0d * Double.parseDouble(imgBuilder.toString().trim())));
 					}else{
-						lastToken = new NumberToken(valueBuilder.toString(),imgBuilder.toString());
+						lastToken = new NumberToken(valueBuilder.toString().trim(),imgBuilder.toString().trim());
 					}
 				}else{
 					i += numberLen -1;
