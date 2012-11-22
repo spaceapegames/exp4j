@@ -17,25 +17,15 @@ import java.util.Map.Entry;
  */
 public class ExpressionBuilder {
 
-	/**
-	 * Property name for unary precedence choice. You can set
-	 * System.getProperty(PROPERTY_UNARY_HIGH_PRECEDENCE,"false") in order to
-	 * change evaluation from an expression like "-3^2" from "(-3)^2" to
-	 * "-(3^2)"
-	 */
-	public static final String PROPERTY_UNARY_HIGH_PRECEDENCE = "exp4j.unary.precedence.high";
-
+	
 	private final Map<String, Double> variables = new LinkedHashMap<String, Double>();
 
-	private final Map<String, CustomFunction> customFunctions;
-
-	private final Map<String, CustomOperator> builtInOperators;
+	private final Map<String, CustomFunction> functions = new HashMap<String, CustomFunction>();
 
 	private Map<String, CustomOperator> customOperators = new HashMap<String, CustomOperator>();
 
 	private final List<Character> validOperatorSymbols;
 
-	private final boolean highUnaryPrecedence;
 
 	private String expression;
 
@@ -47,202 +37,12 @@ public class ExpressionBuilder {
 	 */
 	public ExpressionBuilder(String expression) {
 		this.expression = expression;
-		highUnaryPrecedence = System
-				.getProperty(PROPERTY_UNARY_HIGH_PRECEDENCE) == null
-				|| !System.getProperty(PROPERTY_UNARY_HIGH_PRECEDENCE).equals(
-						"false");
-		customFunctions = getBuiltinFunctions();
-		builtInOperators = getBuiltinOperators();
 		validOperatorSymbols = getValidOperators();
 	}
 
 	private List<Character> getValidOperators() {
 		return Arrays.asList('!', '#', '§', '$', '&', ';', ':', '~', '<', '>',
 				'|', '=');
-	}
-
-	private Map<String, CustomOperator> getBuiltinOperators() {
-		CustomOperator add = new CustomOperator("+") {
-			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] + values[1];
-			}
-		};
-		CustomOperator sub = new CustomOperator("-") {
-			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] - values[1];
-			}
-		};
-		CustomOperator div = new CustomOperator("/", 3) {
-			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] / values[1];
-			}
-		};
-		CustomOperator mul = new CustomOperator("*", 3) {
-			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] * values[1];
-			}
-		};
-		CustomOperator mod = new CustomOperator("%", true, 3) {
-			@Override
-			protected double applyOperation(double[] values) {
-				return values[0] % values[1];
-			}
-		};
-		CustomOperator umin = new CustomOperator("\'", false,
-				this.highUnaryPrecedence ? 7 : 5, 1) {
-			@Override
-			protected double applyOperation(double[] values) {
-				return -values[0];
-			}
-		};
-		CustomOperator pow = new CustomOperator("^", false, 5, 2) {
-			@Override
-			protected double applyOperation(double[] values) {
-				return Math.pow(values[0], values[1]);
-			}
-		};
-		Map<String, CustomOperator> operations = new HashMap<String, CustomOperator>();
-		operations.put("+", add);
-		operations.put("-", sub);
-		operations.put("*", mul);
-		operations.put("/", div);
-		operations.put("\'", umin);
-		operations.put("^", pow);
-		operations.put("%", mod);
-		return operations;
-	}
-
-	private Map<String, CustomFunction> getBuiltinFunctions() {
-		try {
-			CustomFunction abs = new CustomFunction("abs") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.abs(args[0]);
-				}
-			};
-			CustomFunction acos = new CustomFunction("acos") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.acos(args[0]);
-				}
-			};
-			CustomFunction asin = new CustomFunction("asin") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.asin(args[0]);
-				}
-			};
-			CustomFunction atan = new CustomFunction("atan") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.atan(args[0]);
-				}
-			};
-			CustomFunction cbrt = new CustomFunction("cbrt") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.cbrt(args[0]);
-				}
-			};
-			CustomFunction ceil = new CustomFunction("ceil") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.ceil(args[0]);
-				}
-			};
-			CustomFunction cos = new CustomFunction("cos") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.cos(args[0]);
-				}
-			};
-			CustomFunction cosh = new CustomFunction("cosh") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.cosh(args[0]);
-				}
-			};
-			CustomFunction exp = new CustomFunction("exp") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.exp(args[0]);
-				}
-			};
-			CustomFunction expm1 = new CustomFunction("expm1") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.expm1(args[0]);
-				}
-			};
-			CustomFunction floor = new CustomFunction("floor") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.floor(args[0]);
-				}
-			};
-			CustomFunction log = new CustomFunction("log") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.log(args[0]);
-				}
-			};
-			CustomFunction sine = new CustomFunction("sin") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.sin(args[0]);
-				}
-			};
-			CustomFunction sinh = new CustomFunction("sinh") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.sinh(args[0]);
-				}
-			};
-			CustomFunction sqrt = new CustomFunction("sqrt") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.sqrt(args[0]);
-				}
-			};
-			CustomFunction tan = new CustomFunction("tan") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.tan(args[0]);
-				}
-			};
-			CustomFunction tanh = new CustomFunction("tanh") {
-				@Override
-				public double applyFunction(double... args) {
-					return Math.tanh(args[0]);
-				}
-			};
-			Map<String, CustomFunction> customFunctions = new HashMap<String, CustomFunction>();
-			customFunctions.put("abs", abs);
-			customFunctions.put("acos", acos);
-			customFunctions.put("asin", asin);
-			customFunctions.put("atan", atan);
-			customFunctions.put("cbrt", cbrt);
-			customFunctions.put("ceil", ceil);
-			customFunctions.put("cos", cos);
-			customFunctions.put("cosh", cosh);
-			customFunctions.put("exp", exp);
-			customFunctions.put("expm1", expm1);
-			customFunctions.put("floor", floor);
-			customFunctions.put("log", log);
-			customFunctions.put("sin", sine);
-			customFunctions.put("sinh", sinh);
-			customFunctions.put("sqrt", sqrt);
-			customFunctions.put("tan", tan);
-			customFunctions.put("tanh", tanh);
-			return customFunctions;
-		} catch (InvalidCustomFunctionException e) {
-			// this should not happen...
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -270,14 +70,13 @@ public class ExpressionBuilder {
 		}
 		for (String varName : variables.keySet()) {
 			checkVariableName(varName);
-			if (customFunctions.containsKey(varName)) {
+			if (functions.containsKey(varName)) {
 				throw new UnparsableExpressionException("Variable '" + varName
 						+ "' cannot have the same name as a function");
 			}
 		}
-		builtInOperators.putAll(customOperators);
 		return RPNConverter.toRPNExpression(expression, variables,
-				customFunctions, builtInOperators);
+				functions, customOperators);
 	}
 
 	private void checkVariableName(String varName)
@@ -304,7 +103,7 @@ public class ExpressionBuilder {
 	 * @return the {@link ExpressionBuilder} instance
 	 */
 	public ExpressionBuilder withCustomFunction(CustomFunction function) {
-		customFunctions.put(function.name, function);
+		functions.put(function.name, function);
 		return this;
 	}
 

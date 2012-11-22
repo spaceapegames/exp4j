@@ -41,6 +41,11 @@ class OperatorToken extends CalculationToken {
 		this.operation = operation;
 	}
 
+	OperatorToken(CustomOperator operation) {
+		super(operation.symbol);
+		this.operation = operation;
+	}
+
 	/**
 	 * apply the {@link CustomOperator}
 	 * 

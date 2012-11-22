@@ -30,14 +30,14 @@ public abstract class CustomFunction {
 	 *            the name of the function (e.g. foo)
 	 */
 	protected CustomFunction(String name) throws InvalidCustomFunctionException {
-		this.argc = 1;
-		this.name = name;
-		int firstChar = (int) name.charAt(0);
-		if ((firstChar < 65 || firstChar > 90) && (firstChar < 97 || firstChar > 122)) {
-			throw new InvalidCustomFunctionException("functions have to start with a lowercase or uppercase character");
-		}
+		this(name,1);
 	}
 
+	CustomFunction(String name,int argumentCount, boolean builtin){
+		// TODO: marked with a boolean so the signatures are different. this should be fixed soon
+		this.argc=1;
+		this.name = name;
+	}
 	/**
 	 * create a new single value input CustomFunction with a set name
 	 * 
@@ -47,6 +47,10 @@ public abstract class CustomFunction {
 	protected CustomFunction(String name, int argumentCount) throws InvalidCustomFunctionException {
 		this.argc = argumentCount;
 		this.name = name;
+		int firstChar = (int) name.charAt(0);
+		if ((firstChar < 65 || firstChar > 90) && (firstChar < 97 || firstChar > 122)) {
+			throw new InvalidCustomFunctionException("functions have to start with a lowercase or uppercase character");
+		}
 	}
 
 	public int getArgumentCount(){

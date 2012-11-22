@@ -2,6 +2,7 @@ package de.congrace.exp4j;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 abstract class RPNConverter {
@@ -26,12 +27,12 @@ abstract class RPNConverter {
 			}
 			switch (c) {
 			case '+':
-				if (i > 0 && lastChar != '(' && operators.get(lastOperation.toString()) == null) {
+				if (i > 0 && lastChar != '(' && getOperator(lastOperation.toString(),operators) == null) {
 					exprBuilder.append(c);
 				}
 				break;
 			case '-':
-				if (i > 0 && lastChar != '(' && operators.get(lastOperation.toString()) == null) {
+				if (i > 0 && lastChar != '(' && getOperator(lastOperation.toString(),operators) == null) {
 					exprBuilder.append(c);
 				} else {
 					exprBuilder.append('\'');
@@ -44,13 +45,24 @@ abstract class RPNConverter {
 		return exprBuilder.toString();
 	}
 
+	private static CustomOperator getOperator(String symbol, Map<String, CustomOperator> operators) {
+		CustomOperator op = symbol.length() == 1 ? BuiltinOperators.getOperator(symbol.charAt(0)) : null;
+		if (op == null){
+			op = operators.get(symbol);
+		}
+		return op;
+	}
+
 	static RPNExpression toRPNExpression(String infix, Map<String, Double> variables,
 			Map<String, CustomFunction> customFunctions, Map<String, CustomOperator> operators)
 			throws UnknownFunctionException, UnparsableExpressionException {
-		final Tokenizer tokenizer = new Tokenizer(variables.keySet(), customFunctions, operators);
-		final StringBuilder output = new StringBuilder(infix.length());
 		final Stack<Token> operatorStack = new Stack<Token>();
-		List<Token> tokens = tokenizer.getTokens(substituteUnaryOperators(infix, operators));
+		final StringBuilder output = new StringBuilder(infix.length());
+		final Tokenizer tokenizer = new Tokenizer(variables.keySet(), customFunctions, operators);
+		long start = System.currentTimeMillis();
+		String tmp = substituteUnaryOperators(infix, operators);
+		System.out.println(":: tokenizer took " + (System.currentTimeMillis() - start) + " ms WHAT?");
+		List<Token> tokens = tokenizer.getTokens(tmp);
 		validateRPNExpression(tokens,operators);
 		for (final Token token : tokens) {
 			token.mutateStackForInfixTranslation(operatorStack, output);
@@ -61,7 +73,8 @@ abstract class RPNConverter {
 		}
 		String postfix = output.toString().trim();
 		tokens = tokenizer.getTokens(postfix);
-		return new RPNExpression(tokens, postfix, variables);
+		RPNExpression rpn = new RPNExpression(tokens, postfix, variables); 
+		return rpn;
 	}
 
 	private static void validateRPNExpression(List<Token> tokens,Map<String,CustomOperator> operators) throws UnparsableExpressionException{
@@ -78,6 +91,9 @@ abstract class RPNConverter {
 	}
 
 	private static boolean isOperatorCharacter(char c, Map<String, CustomOperator> operators) {
+		if (BuiltinOperators.isOperatorCharacter(c)){
+			return true;
+		}
 		for (String symbol : operators.keySet()) {
 			if (symbol.indexOf(c) != -1) {
 				return true;

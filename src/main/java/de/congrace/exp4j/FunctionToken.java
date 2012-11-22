@@ -22,6 +22,12 @@ class FunctionToken extends CalculationToken {
 		}
 	}
 
+	FunctionToken(CustomFunction f) {
+		super(f.name);
+		this.function = f;
+		this.functionName = f.name;
+	}
+
 	String getName() {
 		return functionName;
 	}

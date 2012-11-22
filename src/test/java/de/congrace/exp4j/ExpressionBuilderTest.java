@@ -585,59 +585,6 @@ public class ExpressionBuilderTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
-	public void testOperatorPrecedence() throws Exception {
-
-		ExpressionBuilder builder = new ExpressionBuilder("1");
-		Field operatorField = ExpressionBuilder.class.getDeclaredField("builtInOperators");
-		operatorField.setAccessible(true);
-		Map<Character, CustomOperator> operators = (Map<Character, CustomOperator>) operatorField.get(builder);
-
-		assertTrue(operators.get("+").leftAssociative);
-		assertTrue(operators.get("*").leftAssociative);
-		assertTrue(operators.get("-").leftAssociative);
-		assertTrue(operators.get("/").leftAssociative);
-		assertTrue(!operators.get("^").leftAssociative);
-		assertTrue(!operators.get("\'").leftAssociative);
-
-		assertTrue(operators.get("+").precedence == operators.get("-").precedence);
-		assertTrue(operators.get("+").precedence < operators.get("*").precedence);
-		assertTrue(operators.get("+").precedence < operators.get("/").precedence);
-		assertTrue(operators.get("+").precedence < operators.get("^").precedence);
-		assertTrue(operators.get("+").precedence < operators.get("\'").precedence);
-
-		assertTrue(operators.get("-").precedence == operators.get("+").precedence);
-		assertTrue(operators.get("-").precedence < operators.get("*").precedence);
-		assertTrue(operators.get("-").precedence < operators.get("/").precedence);
-		assertTrue(operators.get("-").precedence < operators.get("^").precedence);
-		assertTrue(operators.get("-").precedence < operators.get("\'").precedence);
-
-		assertTrue(operators.get("*").precedence > operators.get("+").precedence);
-		assertTrue(operators.get("*").precedence > operators.get("-").precedence);
-		assertTrue(operators.get("*").precedence == operators.get("/").precedence);
-		assertTrue(operators.get("*").precedence < operators.get("^").precedence);
-		assertTrue(operators.get("*").precedence < operators.get("\'").precedence);
-
-		assertTrue(operators.get("/").precedence > operators.get("+").precedence);
-		assertTrue(operators.get("/").precedence > operators.get("-").precedence);
-		assertTrue(operators.get("/").precedence == operators.get("*").precedence);
-		assertTrue(operators.get("/").precedence < operators.get("^").precedence);
-		assertTrue(operators.get("/").precedence < operators.get("\'").precedence);
-
-		assertTrue(operators.get("^").precedence > operators.get("+").precedence);
-		assertTrue(operators.get("^").precedence > operators.get("-").precedence);
-		assertTrue(operators.get("^").precedence > operators.get("*").precedence);
-		assertTrue(operators.get("^").precedence > operators.get("/").precedence);
-		assertTrue(operators.get("^").precedence < operators.get("\'").precedence);
-
-		assertTrue(operators.get("\'").precedence > operators.get("+").precedence);
-		assertTrue(operators.get("\'").precedence > operators.get("-").precedence);
-		assertTrue(operators.get("\'").precedence > operators.get("*").precedence);
-		assertTrue(operators.get("\'").precedence > operators.get("/").precedence);
-		assertTrue(operators.get("\'").precedence > operators.get("^").precedence);
-	}
-
-	@Test
 	public void testExpression1() throws Exception {
 		String expr;
 		double expected;
@@ -900,10 +847,10 @@ public class ExpressionBuilderTest {
 	public void testExpression35() throws Exception {
 		String expr = "-3^2";
 		double expected = -Math.pow(3, 2);
-		System.setProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
+		System.setProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
 		Calculable calc = new ExpressionBuilder(expr).build();
 		assertTrue(expected == calc.calculate());
-		System.clearProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE);
+		System.clearProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE);
 		calc = new ExpressionBuilder(expr).build();
 		assertTrue(9d == calc.calculate());
 	}
@@ -912,10 +859,10 @@ public class ExpressionBuilderTest {
 	public void testExpression36() throws Exception {
 		String expr = "-3^-2";
 		double expected = -Math.pow(3, -2);
-		System.setProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
+		System.setProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
 		Calculable calc = new ExpressionBuilder(expr).build();
 		assertTrue(expected == calc.calculate());
-		System.clearProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE);
+		System.clearProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE);
 		calc = new ExpressionBuilder(expr).build();
 		assertTrue(Math.pow(-3, -2) == calc.calculate());
 	}
@@ -924,20 +871,20 @@ public class ExpressionBuilderTest {
 	public void testExpression37() throws Exception {
 		String expr = "-3^-2^-4";
 		double expected = -Math.pow(3, -Math.pow(2, -4));
-		System.setProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
+		System.setProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
 		Calculable calc = new ExpressionBuilder(expr).build();
 		assertTrue(expected == calc.calculate());
-		System.clearProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE);
+		System.clearProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE);
 	}
 
 	@Test
 	public void testExpression38() throws Exception {
 		String expr = "-3^(-2*3)";
 		double expected = -Math.pow(3, -6);
-		System.setProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
+		System.setProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
 		Calculable calc = new ExpressionBuilder(expr).build();
 		assertTrue(expected == calc.calculate());
-		System.clearProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE);
+		System.clearProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE);
 		calc = new ExpressionBuilder(expr).build();
 		assertTrue(Math.pow(-3, -6) == calc.calculate());
 	}
@@ -946,10 +893,10 @@ public class ExpressionBuilderTest {
 	public void testExpression39() throws Exception {
 		String expr = "3^(2*-3)";
 		double expected = Math.pow(3, -6);
-		System.setProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
+		System.setProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE, "false");
 		Calculable calc = new ExpressionBuilder(expr).build();
 		assertTrue(expected == calc.calculate());
-		System.clearProperty(ExpressionBuilder.PROPERTY_UNARY_HIGH_PRECEDENCE);
+		System.clearProperty(BuiltinOperators.PROPERTY_UNARY_HIGH_PRECEDENCE);
 		calc = new ExpressionBuilder(expr).build();
 		assertTrue(Math.pow(3, 2 * -3) == calc.calculate());
 	}
@@ -1548,7 +1495,9 @@ public class ExpressionBuilderTest {
 		}
 		System.out.println(":: running naive benchmarks, set -DskipBenchmark to skip");
 		String expr = "log(x) - y * (sqrt(x^cos(y)))";
+		long start = System.currentTimeMillis();
 		Calculable calc = new ExpressionBuilder(expr).withVariableNames("x", "y").build();
+		System.out.println(":: building the expression with exp4j took " + (System.currentTimeMillis()- start) + " ms");
 		@SuppressWarnings("unused")
 		double val;
 		Random rnd = new Random();
