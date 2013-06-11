@@ -1183,6 +1183,21 @@ public class ExpressionBuilderTest {
 		}
 	}
 
+	// test for https://www.objecthunter.net/jira/browse/EXP-28
+	// thanks go out to Aleksey for the report
+	@Test(expected=UnparsableExpressionException.class)
+	public void testDanglingOperators() throws Exception {
+		String expr;
+		expr = "2+2+";
+		try {
+			Calculable calc = new ExpressionBuilder(expr).build();
+			Assert.fail("Expression was parsed but should throw an Exception");
+		} catch (UnparsableExpressionException e) {
+			String expected = "Unable to parse character '+' at position 4 in expression '" + expr + "'";
+			assertEquals(expected, e.getMessage());
+		}
+	}
+
 	@Test
 	public void testExpression5() throws Exception {
 		String expr;
