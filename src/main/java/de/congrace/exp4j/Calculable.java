@@ -1,5 +1,7 @@
 package de.congrace.exp4j;
 
+import java.util.Map;
+
 /**
  * This is the basic result class of the exp4j {@link ExpressionBuilder}
  * 
@@ -40,4 +42,9 @@ public interface Calculable {
 	 *            the value of the variable
 	 */
 	public void setVariable(String name, double value);
+
+    /**
+     * clone Calculable so that two calculables don't share the same states
+     */
+    public Calculable copy();
 }

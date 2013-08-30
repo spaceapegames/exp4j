@@ -1,6 +1,7 @@
 package de.congrace.exp4j;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -1671,4 +1672,15 @@ public class ExpressionBuilderTest {
 					+ (rate > 1000 ? new DecimalFormat("#.##").format(rate / 1000) + "k" : rate) + " calc/sec]");
 		}
 	}
+
+    @Test
+    public void testStatelessCalculation() throws Exception {
+        RPNExpression calc = (RPNExpression)new ExpressionBuilder("x*10+5")
+                .withVariableNames("x")
+                .build();
+
+        assertNull(calc.variables.get("x"));
+        assertTrue(calc.calculate(2) == 25);
+        assertNull(calc.variables.get("x"));
+    }
 }

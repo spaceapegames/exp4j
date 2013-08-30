@@ -19,8 +19,12 @@ class RPNExpression implements Calculable {
 		this.variables = variables;
 	}
 
-    public RPNExpression copy(final Map<String, Double> variables){
-        return new RPNExpression(tokens, expression, variables);
+    public Calculable copy(){
+        Map<String, Double> calculationVariables = new HashMap<String, Double>();
+        for (Map.Entry<String, Double> entry : variables.entrySet()) {
+            calculationVariables.put(entry.getKey(), entry.getValue());
+        }
+        return new RPNExpression(tokens, expression, calculationVariables);
     }
 
 	/**
