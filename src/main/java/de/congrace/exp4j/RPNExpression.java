@@ -1,5 +1,6 @@
 package de.congrace.exp4j;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -18,6 +19,10 @@ class RPNExpression implements Calculable {
 		this.variables = variables;
 	}
 
+    public RPNExpression copy(final Map<String, Double> variables){
+        return new RPNExpression(tokens, expression, variables);
+    }
+
 	/**
 	 * calculate the result of the expression and substitute the variables by their values beforehand
 	 * 
@@ -34,14 +39,22 @@ class RPNExpression implements Calculable {
 			throw new IllegalArgumentException("The are an unequal number of variables and arguments");
 		}
 		int i = 0;
-		if (variables.size() > 0 && values != null) {
-			for (Map.Entry<String, Double> entry : variables.entrySet()) {
-				entry.setValue(values[i++]);
-			}
+
+        Map<String, Double> calculationVariables = new HashMap<String, Double>();
+		if (variables.size() > 0) {
+            if (values != null){
+                for (Map.Entry<String, Double> entry : variables.entrySet()) {
+                    calculationVariables.put(entry.getKey(), values[i++]);
+                }
+            }else{
+                for (Map.Entry<String, Double> entry : variables.entrySet()) {
+                    calculationVariables.put(entry.getKey(), entry.getValue());
+                }
+            }
 		}
 		final Stack<Double> stack = new Stack<Double>();
 		for (final Token t : tokens) {
-			((CalculationToken) t).mutateStackForCalculation(stack, variables);
+			((CalculationToken) t).mutateStackForCalculation(stack, calculationVariables);
 		}
 		return stack.pop();
 	}
